@@ -1,4 +1,12 @@
 //Find
+#include "ItemData.h"
+
+///Add
+#if defined(__BL_CHEST_DROP_INFO__)
+#include <unordered_map>
+#endif
+
+//Find
 		CItemData *		MakeItemData(DWORD dwIndex);
 
 ///Add
