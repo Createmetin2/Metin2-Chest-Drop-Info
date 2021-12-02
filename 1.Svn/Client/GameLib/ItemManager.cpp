@@ -1,5 +1,13 @@
 ///Add
 #if defined(__BL_CHEST_DROP_INFO__)
+static DWORD s_adwChestItemInfoKey[4] =
+{
+	173217,
+	72619434,
+	408587239,
+	27973291
+};
+
 bool CItemManager::LoadChestDropInfo(const char* c_szFileName)
 {
 	if (m_ItemDropInfoMap.empty() == false)
@@ -11,36 +19,41 @@ bool CItemManager::LoadChestDropInfo(const char* c_szFileName)
 	if (!CEterPackManager::Instance().Get(file, c_szFileName, &pvData))
 		return false;
 
-	size_t mapSize = 0;
-	file.Read(&mapSize, sizeof(mapSize));
+	DWORD dwElements; 
+	file.Read(&dwElements, sizeof(DWORD));
 
-	for (size_t i = 0; i < mapSize; i++)
+	DWORD dwDataSize;;
+	file.Read(&dwDataSize, sizeof(DWORD));
+
+	auto pbData = std::make_unique<BYTE[]>(dwDataSize);
+	file.Read(pbData.get(), dwDataSize);
+
+	CLZObject zObj;
+	if (!CLZO::Instance().Decompress(zObj, pbData.get(), s_adwChestItemInfoKey))
+		return false;
+
+	DWORD* arrDropInfo = reinterpret_cast<DWORD*>(zObj.GetBuffer());
+
+	for (DWORD i = 0; i < dwElements; i++)
 	{
-		DWORD dwItemVnum = 0;
-		file.Read(&dwItemVnum, sizeof(dwItemVnum));
-
-		size_t vecSize = 0;
-		file.Read(&vecSize, sizeof(vecSize));
+		const DWORD dwItemVnum = *(arrDropInfo++);
+		const DWORD dwDropVnum = *(arrDropInfo++);
+		m_ItemDropInfoMap[dwItemVnum].push_back(dwDropVnum);
+	}
+	
+	for (TChestDropItemInfoMap::iterator it = m_ItemDropInfoMap.begin(); it != m_ItemDropInfoMap.end(); ++it)
+	{
+		TChestDropItemInfoVec& vecDrop = it->second;
 		
-		TChestDropItemInfoVec& vecDrop = m_ItemDropInfoMap[dwItemVnum];
-		vecDrop.reserve(vecSize);
-
-		for (size_t j = 0; j < vecSize; j++)
-		{
-			DWORD dwDropVnum = 0;
-			file.Read(&dwDropVnum, sizeof(dwDropVnum));
-			vecDrop.push_back(dwDropVnum);
-		}
-		
-		std::sort(vecDrop.begin(), vecDrop.end(), 
+		std::sort(vecDrop.begin(), vecDrop.end(),
 			[this](TChestDropItemInfoVec::value_type const a, TChestDropItemInfoVec::value_type const b)
-		{
-			CItemData* pItemData[2];
-			if (GetItemDataPointer(a, &pItemData[0]) && GetItemDataPointer(b, &pItemData[1]))
-				return pItemData[0]->GetSize() < pItemData[1]->GetSize();
+			{
+				CItemData* pItemData[2];
+				if (GetItemDataPointer(a, &pItemData[0]) && GetItemDataPointer(b, &pItemData[1]))
+					return pItemData[0]->GetSize() < pItemData[1]->GetSize();
 
-			return false;
-		});
+				return false;
+			});
 	}
 
 	return true;
