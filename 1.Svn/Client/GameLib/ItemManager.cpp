@@ -19,7 +19,7 @@ bool CItemManager::LoadChestDropInfo(const char* c_szFileName)
 	if (!CEterPackManager::Instance().Get(file, c_szFileName, &pvData))
 		return false;
 
-	DWORD dwElements; 
+	DWORD dwElements;
 	file.Read(&dwElements, sizeof(DWORD));
 
 	DWORD dwDataSize;;
@@ -32,24 +32,24 @@ bool CItemManager::LoadChestDropInfo(const char* c_szFileName)
 	if (!CLZO::Instance().Decompress(zObj, pbData.get(), s_adwChestItemInfoKey))
 		return false;
 
-	DWORD* arrDropInfo = reinterpret_cast<DWORD*>(zObj.GetBuffer());
+	struct SLZODropData { DWORD dwItemVnum; DWORD dwDropVnum; int iCount; };
+	const SLZODropData* arrDropInfo = reinterpret_cast<const SLZODropData*>(zObj.GetBuffer());
 
 	for (DWORD i = 0; i < dwElements; i++)
 	{
-		const DWORD dwItemVnum = *(arrDropInfo++);
-		const DWORD dwDropVnum = *(arrDropInfo++);
-		m_ItemDropInfoMap[dwItemVnum].push_back(dwDropVnum);
+		const SLZODropData& data = *(arrDropInfo + i);
+		m_ItemDropInfoMap[data.dwItemVnum].push_back({ data.dwDropVnum, data.iCount });
 	}
-	
+
 	for (TChestDropItemInfoMap::iterator it = m_ItemDropInfoMap.begin(); it != m_ItemDropInfoMap.end(); ++it)
 	{
 		TChestDropItemInfoVec& vecDrop = it->second;
-		
+
 		std::sort(vecDrop.begin(), vecDrop.end(),
-			[this](TChestDropItemInfoVec::value_type const a, TChestDropItemInfoVec::value_type const b)
+			[this](const SDropItemInfo& a, const SDropItemInfo& b)
 			{
 				CItemData* pItemData[2];
-				if (GetItemDataPointer(a, &pItemData[0]) && GetItemDataPointer(b, &pItemData[1]))
+				if (GetItemDataPointer(a.dwDropVnum, &pItemData[0]) && GetItemDataPointer(b.dwDropVnum, &pItemData[1]))
 					return pItemData[0]->GetSize() < pItemData[1]->GetSize();
 
 				return false;

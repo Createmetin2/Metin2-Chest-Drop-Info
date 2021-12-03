@@ -46,10 +46,10 @@ PyObject* itemGetDropInfo(PyObject* poSelf, PyObject* poArgs)
 
 		for (CItemManager::TChestDropItemInfoVec::const_iterator it = vDropInfo->begin(); it != vDropInfo->end(); ++it)
 		{
-			const DWORD dwDropVnum = *it;
+			const CItemManager::SDropItemInfo& dwDropInfo = *it;
 
 			CItemData* pItemData;
-			if (!CItemManager::Instance().GetItemDataPointer(dwDropVnum, &pItemData))
+			if (!CItemManager::Instance().GetItemDataPointer(dwDropInfo.dwDropVnum, &pItemData))
 				continue;
 
 			const BYTE bItemSize = pItemData->GetSize();
@@ -61,7 +61,7 @@ PyObject* itemGetDropInfo(PyObject* poSelf, PyObject* poArgs)
 				if (iPos >= 0)
 				{
 					m_Grid.Put(iPos, 1, bItemSize);
-					PyList_Append(poList, Py_BuildValue("iii", pageCount, iPos, dwDropVnum));
+					PyList_Append(poList, Py_BuildValue("iiii", pageCount, iPos, dwDropInfo.dwDropVnum, dwDropInfo.iCount));
 					break;
 				}
 				else

@@ -11,7 +11,13 @@
 
 ///Add
 #if defined(__BL_CHEST_DROP_INFO__)
-		using							TChestDropItemInfoVec = std::vector<DWORD>;
+		struct SDropItemInfo 
+		{
+			DWORD	dwDropVnum;
+			int		iCount;
+		};
+
+		using							TChestDropItemInfoVec = std::vector<SDropItemInfo>;
 		using							TChestDropItemInfoMap = std::unordered_map<DWORD, TChestDropItemInfoVec>;
 
 		bool							LoadChestDropInfo(const char* c_szFileName);

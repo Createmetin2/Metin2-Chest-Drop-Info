@@ -5,6 +5,8 @@ import uiToolTip
 
 class ChestDropInfoWindow(ui.ScriptWindow):
 	DROP_SLOT_SIZE = 5 * 8
+	ITEM = 0
+	COUNT = 1
 
 	def __init__(self) :
 		ui.ScriptWindow.__init__(self)
@@ -86,7 +88,8 @@ class ChestDropInfoWindow(ui.ScriptWindow):
 
 		if self.CurrentPage in self.DropDict:
 			for pos in self.DropDict[self.CurrentPage]:
-				self.DropItemSlot.SetItemSlot(pos, self.DropDict[self.CurrentPage][pos])
+				data = self.DropDict[self.CurrentPage][pos]
+				self.DropItemSlot.SetItemSlot(pos, data[ChestDropInfoWindow.ITEM], data[ChestDropInfoWindow.COUNT])
 		
 		self.DropItemSlot.RefreshSlot()
 	
@@ -108,8 +111,8 @@ class ChestDropInfoWindow(ui.ScriptWindow):
 		for i in range(self.PageCount + 1):
 			self.DropDict[i] = dict()
 
-		for page, pos, vnum in DropList:
-			self.DropDict[page][pos] = vnum
+		for page, pos, vnum, count in DropList:
+			self.DropDict[page][pos] = (vnum, count)
 
 		self.CurrentPage = 0
 		self.SetPage(0)
@@ -133,7 +136,8 @@ class ChestDropInfoWindow(ui.ScriptWindow):
 		if self.tooltipitem:
 			if self.CurrentPage in self.DropDict:
 				if slotIndex in self.DropDict[self.CurrentPage]:
-					self.tooltipitem.SetItemToolTip(self.DropDict[self.CurrentPage][slotIndex])
+					data = self.DropDict[self.CurrentPage][slotIndex]
+					self.tooltipitem.SetItemToolTip(data[ChestDropInfoWindow.ITEM])
 
 	def OverOutItem(self):
 		if self.tooltipitem:
