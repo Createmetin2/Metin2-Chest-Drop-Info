@@ -10,8 +10,9 @@ if app.__BL_CHEST_DROP_INFO__:
 		if app.__BL_CHEST_DROP_INFO__:
 			if app.IsPressed(app.DIK_LCONTROL):
 				itemVnum = safebox.GetItemID(slotIndex)
-				if item.HasDropInfo(itemVnum) and self.interface:
-					self.interface.OpenChestDropWindow(itemVnum)
+				isMain = not app.IsPressed(app.DIK_LSHIFT)
+				if item.HasDropInfo(itemVnum, isMain) and self.interface:
+					self.interface.OpenChestDropWindow(itemVnum, isMain)
 				return
 
 #Find in class MallWindow(ui.ScriptWindow):
@@ -22,8 +23,9 @@ if app.__BL_CHEST_DROP_INFO__:
 		if app.__BL_CHEST_DROP_INFO__:
 			if app.IsPressed(app.DIK_LCONTROL):
 				itemVnum = safebox.GetMallItemID(slotIndex)
-				if item.HasDropInfo(itemVnum) and self.interface:
-					self.interface.OpenChestDropWindow(itemVnum)
+				isMain = not app.IsPressed(app.DIK_LSHIFT)
+				if item.HasDropInfo(itemVnum, isMain) and self.interface:
+					self.interface.OpenChestDropWindow(itemVnum, isMain)
 				return
 
 #If you don't have interface:

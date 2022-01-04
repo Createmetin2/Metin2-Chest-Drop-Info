@@ -7,8 +7,9 @@
 		if app.__BL_CHEST_DROP_INFO__:
 			if app.IsPressed(app.DIK_LCONTROL):
 				itemIndex = shop.GetItemID(selectedSlotPos)
-				if item.HasDropInfo(itemIndex) and self.interface:
-					self.interface.OpenChestDropWindow(itemIndex)
+				isMain = not app.IsPressed(app.DIK_LSHIFT)
+				if item.HasDropInfo(itemIndex, isMain):
+					self.interface.OpenChestDropWindow(itemIndex, isMain)
 				return
 
 #If you don't have interface:

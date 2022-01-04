@@ -100,12 +100,12 @@ class ChestDropInfoWindow(ui.ScriptWindow):
 			self.currentPageText.SetText(str(self.CurrentPage + 1))
 			self.UpdateItems()
 	
-	def SetUp(self, itemVnum):
+	def SetUp(self, itemVnum, isMain):
 		self.ItemVnum = itemVnum
 		self.MainItemSlot.SetItemSlot(0, self.ItemVnum, 0)
 		self.MainItemSlot.RefreshSlot()
 
-		(self.PageCount, DropList) = item.GetDropInfo(self.ItemVnum)
+		(self.PageCount, DropList) = item.GetDropInfo(self.ItemVnum, isMain)
 
 		self.DropDict.clear()
 		for i in range(self.PageCount + 1):
@@ -117,12 +117,12 @@ class ChestDropInfoWindow(ui.ScriptWindow):
 		self.CurrentPage = 0
 		self.SetPage(0)
 	
-	def Open(self, itemVnum):
+	def Open(self, itemVnum, isMain):
 		if self.IsShow():
 			return
 
 		self.__LoadWindow()
-		self.SetUp(itemVnum)
+		self.SetUp(itemVnum, isMain)
 		
 		self.SetCenterPosition()
 		self.SetTop()

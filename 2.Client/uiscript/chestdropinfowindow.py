@@ -3,9 +3,9 @@ import uiScriptLocale
 
 PATTERN_PATH			= "d:/ymir work/ui/pattern/"
 CHATTING_PATH			= "d:/ymir work/ui/chat/"
-
+UPDATE_2_5 = 60
 WINDOW_WIDTH			= 188
-WINDOW_HEIGHT			= 380
+WINDOW_HEIGHT			= 380 + UPDATE_2_5
 PATTERN_WINDOW_WIDTH	= WINDOW_WIDTH - 22
 PATTERN_WINDOW_HEIGHT	= WINDOW_HEIGHT - 46
 
@@ -134,29 +134,33 @@ window = {
 						},
 					),
 				},
-				## success slot bg
+				## main slot bg
 				{
-					"name" : "main_item_bg",
+					"name" : "regist_slot_img",
 					"type" : "expanded_image",
 					"style" : ("ltr",),
 					
 					"x" : 20 + 49,
 					"y" : 103 - 70,
 					
-					"image" : "d:/ymir work/ui/game/attr6th7th/material_slot.sub",
-				},
-				## success slot
-				{
-					"name" : "main_item_slot",
-					"type" : "slot",
-
-					"x" : 28 + 49,
-					"y" : 111 - 70,
-
-					"width" : 32,
-					"height" : 32,
+					"image" : "d:/ymir work/ui/game/attr6th7th/regist_slot.sub",
 					
-					"slot" : ( {"index":0, "x":0, "y":0, "width":32, "height":32}, )
+					"children" :
+					(
+						## regist slot
+						{
+								"name" : "main_item_slot",
+								"type" : "slot",
+
+								"x" : 0,
+								"y" : 0,
+
+								"width" : 44,
+								"height" : 107,
+								
+								"slot" : ( {"index":0, "x":6, "y":6, "width":32, "height":96}, )
+						},
+					),
 				},
 				## Item Slot
 				{
@@ -164,7 +168,7 @@ window = {
 					"type" : "grid_table",
 
 					"x" : 13,
-					"y" : 80,
+					"y" : 80 + UPDATE_2_5,
 
 					"start_index" : 0,
 					"x_count" : 5,
@@ -180,7 +184,7 @@ window = {
 					"type" : "button",
 					
 					"x" : 54, 
-					"y" : 343,
+					"y" : 343 + UPDATE_2_5,
 
 					"default_image" : "d:/ymir work/ui/public/public_intro_btn/prev_btn_01.sub",
 					"over_image" : "d:/ymir work/ui/public/public_intro_btn/prev_btn_02.sub",
@@ -191,7 +195,7 @@ window = {
 					"type" : "button",
 
 					"x" : 112, 
-					"y" : 343,
+					"y" : 343 + UPDATE_2_5,
 
 					"default_image" : "d:/ymir work/ui/public/public_intro_btn/next_btn_01.sub",
 					"over_image" : "d:/ymir work/ui/public/public_intro_btn/next_btn_02.sub",
@@ -202,7 +206,7 @@ window = {
 					"type" : "thinboard_circle",
 					
 					"x" : 78,
-					"y" : 340,
+					"y" : 340 + UPDATE_2_5,
 					
 					"width" : 30,
 					"height" : 20,

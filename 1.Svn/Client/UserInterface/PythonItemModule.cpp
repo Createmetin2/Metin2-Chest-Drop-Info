@@ -10,40 +10,43 @@ PyObject* itemHasDropInfo(PyObject* poSelf, PyObject* poArgs)
 	int iItemIndex;
 	if (!PyTuple_GetInteger(poArgs, 0, &iItemIndex))
 		return Py_BadArgument();
-	
-	CItemData* pItemData;
-	if (!CItemManager::Instance().GetItemDataPointer(iItemIndex, &pItemData))
-		return Py_BuildValue("b", false);
 
-	switch (pItemData->GetType())
-	{
-	case CItemData::EItemType::ITEM_TYPE_GIFTBOX:
-	case CItemData::EItemType::ITEM_TYPE_TREASURE_BOX:
-		break;
-	default:
-		return Py_BuildValue("b", false);
-	}
-	
-	const CItemManager::TChestDropItemInfoVec* vDropInfo = CItemManager::Instance().GetItemDropInfoVec(iItemIndex);
-	const bool bHasInfo = (vDropInfo != nullptr && (vDropInfo->empty() == false));
-
-	return Py_BuildValue("b", bHasInfo);
-}
-
-PyObject* itemGetDropInfo(PyObject* poSelf, PyObject* poArgs)
-{
-	int iItemIndex;
-	if (!PyTuple_GetInteger(poArgs, 0, &iItemIndex))
+	bool bMain;
+	if (!PyTuple_GetBoolean(poArgs, 1, &bMain))
 		return Py_BadArgument();
 
-	PyObject* poList = PyList_New(0);
-	uint8_t pageCount(0);
-
-	const CItemManager::TChestDropItemInfoVec* vDropInfo = CItemManager::Instance().GetItemDropInfoVec(iItemIndex);
-	if (vDropInfo != nullptr && vDropInfo->empty() == false)
+	CItemManager::TChestDropItemInfoVec* vDropInfo = nullptr;
+	
+	if (bMain)
 	{
-		CGrid m_Grid(5, 8);
+		CItemData* pItemData;
+		if (!CItemManager::Instance().GetItemDataPointer(iItemIndex, &pItemData))
+			return Py_BuildValue("b", false);
 
+		switch (pItemData->GetType())
+		{
+		case CItemData::EItemType::ITEM_TYPE_GIFTBOX:
+		case CItemData::EItemType::ITEM_TYPE_TREASURE_BOX:
+			break;
+		default:
+			return Py_BuildValue("b", false);
+		}
+
+		vDropInfo = CItemManager::Instance().GetItemDropInfoVec(iItemIndex);
+	}
+	else
+		vDropInfo = CItemManager::Instance().GetBaseItemDropInfoVec(iItemIndex);
+
+	return Py_BuildValue("b", (vDropInfo && !vDropInfo->empty()));
+}
+
+static int __CreateDropPage(CItemManager::TChestDropItemInfoVec* vDropInfo, PyObject* poList)
+{
+	int iPageCount(0);
+	CGrid grid(5, 8);
+	
+	if (vDropInfo && !vDropInfo->empty())
+	{
 		for (CItemManager::TChestDropItemInfoVec::const_iterator it = vDropInfo->begin(); it != vDropInfo->end(); ++it)
 		{
 			const CItemManager::SDropItemInfo& dwDropInfo = *it;
@@ -56,24 +59,45 @@ PyObject* itemGetDropInfo(PyObject* poSelf, PyObject* poArgs)
 
 			while (true)
 			{
-				const int iPos = m_Grid.FindBlank(1, bItemSize);
+				const int iPos = grid.FindBlank(1, bItemSize);
 
 				if (iPos >= 0)
 				{
-					m_Grid.Put(iPos, 1, bItemSize);
-					PyList_Append(poList, Py_BuildValue("iiii", pageCount, iPos, dwDropInfo.dwDropVnum, dwDropInfo.iCount));
+					grid.Put(iPos, 1, bItemSize);
+					PyList_Append(poList, Py_BuildValue("iiii", iPageCount, iPos, dwDropInfo.dwDropVnum, dwDropInfo.iCount));
 					break;
 				}
 				else
 				{
-					m_Grid.Clear();
-					++pageCount;
+					grid.Clear();
+					++iPageCount;
 				}
 			}
 		}
 	}
 
-	return Py_BuildValue("iO", pageCount, poList);
+	return iPageCount;
+}
+
+PyObject* itemGetDropInfo(PyObject* poSelf, PyObject* poArgs)
+{
+	int iItemIndex;
+	if (!PyTuple_GetInteger(poArgs, 0, &iItemIndex))
+		return Py_BadArgument();
+
+	bool bMain;
+	if (!PyTuple_GetBoolean(poArgs, 1, &bMain))
+		return Py_BadArgument();
+
+	PyObject* poList = PyList_New(0);
+	CItemManager::TChestDropItemInfoVec* vDropInfo = nullptr;
+
+	if (bMain)
+		vDropInfo = CItemManager::Instance().GetItemDropInfoVec(iItemIndex);
+	else
+		vDropInfo = CItemManager::Instance().GetBaseItemDropInfoVec(iItemIndex);
+
+	return Py_BuildValue("iO", __CreateDropPage(vDropInfo, poList), poList);
 }
 #endif
 

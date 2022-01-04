@@ -23,8 +23,12 @@
 #Add
 	if app.__BL_CHEST_DROP_INFO__:
 		def AppendChestDropInfo(self, itemVnum):
-			hasinfo = item.HasDropInfo(itemVnum)
+			hasinfo = item.HasDropInfo(itemVnum, True)
 			if hasinfo:
 				self.AppendSpace(5)
-				#self.AppendTextLine("|Eemoji/key_ctrl|e + |Eemoji/key_x|e - Chest Drop Info", self.NORMAL_COLOR)
-				self.AppendTextLine("[Chest Drop Info]", self.NORMAL_COLOR)
+				self.AppendTextLine(localeInfo.CHEST_DROP_INFO, self.NORMAL_COLOR)
+			
+			hasinfo = item.HasDropInfo(itemVnum, False)
+			if hasinfo:
+				self.AppendSpace(5)
+				self.AppendTextLine(localeInfo.CHEST_BASE_DROP_INFO, self.NORMAL_COLOR)

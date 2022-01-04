@@ -1,0 +1,2 @@
+CHEST_DROP_INFO	|Eemoji/key_ctrl|e + |Eemoji/key_rclick|e - See the items this chest contains.
+CHEST_BASE_DROP_INFO	|Eemoji/key_ctrl|e + |Eemoji/key_shift|e + |Eemoji/key_rclick|e - See chests containing this item.

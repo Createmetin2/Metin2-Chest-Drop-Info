@@ -40,9 +40,9 @@ if app.__BL_CHEST_DROP_INFO__:
 
 #Add
 	if app.__BL_CHEST_DROP_INFO__:
-		def OpenChestDropWindow(self, itemVnum):
+		def OpenChestDropWindow(self, itemVnum, isMain):
 			if self.wndChestDropInfo:
-				self.wndChestDropInfo.Open(itemVnum)
+				self.wndChestDropInfo.Open(itemVnum, isMain)
 
 #If you don't have interface(safebox):
 

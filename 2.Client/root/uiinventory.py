@@ -6,6 +6,7 @@
 #Add
 		if app.__BL_CHEST_DROP_INFO__:
 			if app.IsPressed(app.DIK_LCONTROL):
-				if item.HasDropInfo(ItemVNum) and self.interface:
-					self.interface.OpenChestDropWindow(ItemVNum)
+				isMain = not app.IsPressed(app.DIK_LSHIFT)
+				if item.HasDropInfo(ItemVNum, isMain) and self.interface:
+					self.interface.OpenChestDropWindow(ItemVNum, isMain)
 				return
