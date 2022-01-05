@@ -1,20 +1,30 @@
-#Find in def AddItemData(self, itemVnum, metinSlot, attrSlot = 0, flags = 0, unbindTime = 0):
-#At end of the function
-			elif item.LIMIT_TIMER_BASED_ON_WEAR == limitType:
-				self.AppendTimerBasedOnWearLastTime(metinSlot)
-				#dbg.TraceError("1) REAL_TIME flag On ")		
-		
-		self.ShowToolTip()
+#Find in def SetInventoryItem(self, slotIndex, window_type = player.INVENTORY):
+		self.AddItemData(itemVnum, metinSlot, attrSlot)
 
-#Change
-			elif item.LIMIT_TIMER_BASED_ON_WEAR == limitType:
-				self.AppendTimerBasedOnWearLastTime(metinSlot)
-				#dbg.TraceError("1) REAL_TIME flag On ")
-
+#Add
 		if app.__BL_CHEST_DROP_INFO__:
 			self.AppendChestDropInfo(itemVnum)
-		
-		self.ShowToolTip()
+
+#Find in def SetShopItem(self, slotIndex):
+		self.AppendPrice(price)
+
+#Add
+		if app.__BL_CHEST_DROP_INFO__:
+			self.AppendChestDropInfo(itemVnum)
+
+#Find in def SetSafeBoxItem(self, slotIndex):
+		self.AddItemData(itemVnum, metinSlot, attrSlot, safebox.GetItemFlags(slotIndex))
+
+#Add
+		if app.__BL_CHEST_DROP_INFO__:
+			self.AppendChestDropInfo(itemVnum)
+
+#Find in def SetMallItem(self, slotIndex):
+		self.AddItemData(itemVnum, metinSlot, attrSlot)
+
+#Add
+		if app.__BL_CHEST_DROP_INFO__:
+			self.AppendChestDropInfo(itemVnum)
 
 #Find
 	def __IsOldHair(self, itemVnum):

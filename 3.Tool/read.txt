@@ -1,2 +1,2 @@
-use the tool with your special_item_group.txt file
+use the tool with your special_item_group.txt & fishing.txt file
 then transfer the chest_drop file to locale/xx/

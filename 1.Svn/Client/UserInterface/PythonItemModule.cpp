@@ -18,22 +18,7 @@ PyObject* itemHasDropInfo(PyObject* poSelf, PyObject* poArgs)
 	CItemManager::TChestDropItemInfoVec* vDropInfo = nullptr;
 	
 	if (bMain)
-	{
-		CItemData* pItemData;
-		if (!CItemManager::Instance().GetItemDataPointer(iItemIndex, &pItemData))
-			return Py_BuildValue("b", false);
-
-		switch (pItemData->GetType())
-		{
-		case CItemData::EItemType::ITEM_TYPE_GIFTBOX:
-		case CItemData::EItemType::ITEM_TYPE_TREASURE_BOX:
-			break;
-		default:
-			return Py_BuildValue("b", false);
-		}
-
 		vDropInfo = CItemManager::Instance().GetItemDropInfoVec(iItemIndex);
-	}
 	else
 		vDropInfo = CItemManager::Instance().GetBaseItemDropInfoVec(iItemIndex);
 

@@ -106,6 +106,10 @@ CItemManager::TChestDropItemInfoVec* CItemManager::GetBaseItemDropInfoVec(const 
 {
 	//Chests which contains this item.
 
+	static std::vector<DWORD> vecNoInfo;
+	if (std::find(vecNoInfo.begin(), vecNoInfo.end(), dwVnum) != vecNoInfo.end())
+		return nullptr;
+	
 	CItemManager::TChestDropItemInfoMap::iterator it = m_BaseItemDropInfoMap.find(dwVnum);
 	if (it != m_BaseItemDropInfoMap.end())
 		return &(it->second);
@@ -118,11 +122,14 @@ CItemManager::TChestDropItemInfoVec* CItemManager::GetBaseItemDropInfoVec(const 
 			[&](const CItemManager::SDropItemInfo& data) { return data.dwDropVnum == dwVnum; });
 
 		if (itFind != info.end())
-			tempVec.push_back({ it->first, 1 });
+			tempVec.push_back({ it->first, 0 });
 	}
 
 	if (tempVec.empty())
+	{
+		vecNoInfo.push_back(dwVnum);
 		return nullptr;
+	}
 
 	CItemManager::TChestDropItemInfoVec& retVec = m_BaseItemDropInfoMap[dwVnum];
 	retVec = std::move(tempVec);
